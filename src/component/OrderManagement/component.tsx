@@ -70,11 +70,10 @@ function Filter({ column, table, }: { column: Column<any, any>, table: ReactTabl
         </div>
     ) : (
         <input
-            style={{ width: "100%" }}
             type="text"
             value={(columnFilterValue ?? '') as string}
             onChange={e => column.setFilterValue(e.target.value)}
-            placeholder={`Search... `}
+            placeholder={`Search...`}
             className="w-36 border shadow rounded"
         />
     )
@@ -83,7 +82,7 @@ function Filter({ column, table, }: { column: Column<any, any>, table: ReactTabl
 
 const TTable = ({ table }: any) => {
     return (
-        <table style={{ width: "100%" }}>
+        <table>
             <thead>
                 {table.getHeaderGroups().map((headerGroup: any) => (
                     <tr key={headerGroup.id}>
@@ -121,11 +120,6 @@ const TTable = ({ table }: any) => {
 }
 
 const Pagination = ({ table }: any) => {
-    const _handleChangePageIndex = (e: { target: { value: any; }; }) => {
-        const page = e.target.value ? Number(e.target.value) - 1 : 0;
-        table.setPageIndex(page);
-    }
-
     return (
         <div className="flex items-center justify-between gap-2">
             <div className="flex">
@@ -140,7 +134,10 @@ const Pagination = ({ table }: any) => {
                     <input
                         type="number"
                         defaultValue={table.getState().pagination.pageIndex + 1}
-                        onChange={_handleChangePageIndex}
+                        onChange={(e) => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                            table.setPageIndex(page);
+                        }}
                         className="border p-1 rounded w-16"
                     />
                 </span>
@@ -174,6 +171,7 @@ const Pagination = ({ table }: any) => {
 
             </div>
             <div className="flex">
+
                 <select
                     value={table.getState().pagination.pageSize}
                     onChange={(e) => {

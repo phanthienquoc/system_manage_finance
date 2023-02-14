@@ -1,130 +1,61 @@
-import PropTypes from "prop-types"
-import React, { useState, useReducer, useMemo } from 'react'
-import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from '@tanstack/react-table'
+import React, { useState, useEffect, useMemo } from 'react';
 
-function UserManagement({ data }: any) {
-    const rerender = useReducer(() => ({}), {})[1]
+import Service from 'service';
+import Table from 'core/Table'
 
-    const [sorting, setSorting] = useState<SortingState>([])
-
-
+import { ColumnDef } from "@tanstack/react-table";
+function UserManagement() {
     const columns = useMemo<ColumnDef<any>[]>(
         () => [
             {
-                accessorKey: 'user_id',
-                header: () => <span>user_id</span>,
+                accessorKey: 'username',
+                header: () => <span>Visits</span>,
+                footer: props => props.column.id,
             },
             {
-                accessorKey: 'username',
-                header: () => <span>username</span>,
+                accessorKey: 'user_id',
+                cell: info => info.getValue(),
+                header: () => <span>user_id</span>,
+                footer: props => props.column.id,
             },
             {
                 accessorKey: 'first_name',
+                cell: info => info.getValue(),
                 header: () => <span>first_name</span>,
+                footer: props => props.column.id,
             },
             {
-                accessorKey: 'last_name',
+                accessorFn: row => row.last_name,
+                id: 'last_name',
+                cell: info => info.getValue(),
                 header: () => <span>last_name</span>,
-            },
-            {
-                accessorKey: 'language_code',
-                header: () => <span>language_code</span>,
+                footer: props => props.column.id,
             },
         ],
         []
     )
 
+    const [data, setData] = useState([]);
 
-    const table = useReactTable({
+    useEffect(() => {
+        getUsers()
+    }, [])
+
+    const getUsers = async () => {
+        let { data }: any = await Service.User.getUser()
+        setData(data)
+    }
+    const refreshData = async () => { getUsers() }
+    const tableProps = {
         data,
-        columns: columns,
-        state: {
-            sorting,
-        },
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        debugTable: true,
-    })
+        columns,
+        refreshData: refreshData
+    }
 
-    return (
-        <div className="p-2">
-            <div className="h-2" />
-            <table style={{ width: "100%" }}>
-                <thead>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => {
-                                return (
-                                    <th key={header.id} colSpan={header.colSpan}>
-                                        {header.isPlaceholder ? null : (
-                                            <div
-                                                {...{
-                                                    className: header.column.getCanSort()
-                                                        ? 'cursor-pointer select-none'
-                                                        : '',
-                                                    onClick: header.column.getToggleSortingHandler(),
-                                                }}
-                                            >
-                                                {flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                                {{
-                                                    asc: ' 🔼',
-                                                    desc: ' 🔽',
-                                                }[header.column.getIsSorted() as string] ?? null}
-                                            </div>
-                                        )}
-                                    </th>
-                                )
-                            })}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody>
-                    {table
-                        .getRowModel()
-                        .rows.slice(0, 10)
-                        .map(row => {
-                            return (
-                                <tr key={row.id}>
-                                    {row.getVisibleCells().map(cell => {
-                                        return (
-                                            <td key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </td>
-                                        )
-                                    })}
-                                </tr>
-                            )
-                        })}
-                </tbody>
-            </table>
-            <div>{table.getRowModel().rows.length} Rows</div>
-            <div>
-                <button onClick={() => rerender()}>Force Rerender</button>
-            </div>
-            <div>
-                <button onClick={() => { }}>Refresh Data</button>
-            </div>
-            <pre>{JSON.stringify(sorting, null, 2)}</pre>
-        </div>
-    )
+    return (<Table {...tableProps} />)
 }
 
 UserManagement.propTypes = {
-    data: PropTypes.any
 }
 
 export default UserManagement
