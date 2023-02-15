@@ -7,10 +7,10 @@ import StockContainer from 'container/StockContainer';
 import OrderContainer from 'container/OrderContainer';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DatabaseContainer from 'container/DatabaseContainer';
 
 const AppRoutes = ({ children }: any) => {
 
-    console.log("renderr")
     return (
         <BrowserRouter>
             <Routes>
@@ -23,6 +23,7 @@ const AppRoutes = ({ children }: any) => {
                     <Route path="user" element={<UserContainer />} />
                     <Route path="stock" element={<StockContainer />} />
                     <Route path="order" element={<OrderContainer />} />
+                    <Route path="database" element={<DatabaseContainer />} />
                 </Route>
             </Routes>
         </BrowserRouter >

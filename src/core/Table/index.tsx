@@ -93,11 +93,11 @@ const TTable = ({ table }: any) => {
                                     {header.isPlaceholder ? null : (
                                         <div>
                                             {flexRender(header.column.columnDef.header, header.getContext())}
-                                            {header.column.getCanFilter() ? (
+                                            {/* {header.column.getCanFilter() ? (
                                                 <div>
                                                     <Filter column={header.column} table={table} />
                                                 </div>
-                                            ) : null}
+                                            ) : null} */}
                                         </div>
                                     )}
                                 </th>

@@ -11,6 +11,10 @@ const menus = [
     name: "Order",
     path: "/order",
   },
+  {
+    name: "Database",
+    path: "/database",
+  },
 ];
 
 export default menus;
